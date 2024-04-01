@@ -1,7 +1,8 @@
 name: Intiface Central Build
 
 # Only build on tag pushes
-on: 
+on:
+  workflow_dispatch:
   push:
 #    branches:
 #      - main
