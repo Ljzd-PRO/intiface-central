@@ -213,6 +213,8 @@ jobs:
         run: cargo install cargo-make
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
       - name: Build rust android library
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
