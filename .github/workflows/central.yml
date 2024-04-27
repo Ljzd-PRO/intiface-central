@@ -249,31 +249,31 @@ jobs:
           name: Android App Bundle
           path: |
             build/app/outputs/bundle/release/*.aab
-  web:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-      - run: flutter config
-        name: flutter config
-      - run: flutter build web --release
-        name: flutter build
-      - name: Zip Release
-        run: zip -r intiface-central-web.zip build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: web-zip
-          path: ./intiface-central-web.zip
+#  web:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#      - name: rust toolchain
+#        uses: actions-rs/toolchain@v1
+#        with:
+#          profile: minimal
+#          toolchain: stable
+#          override: true
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          channel: 'stable'
+#          cache: true
+#          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
+#      - run: flutter config
+#        name: flutter config
+#      - run: flutter build web --release
+#        name: flutter build
+#      - name: Zip Release
+#        run: zip -r intiface-central-web.zip build
+#      - name: Archive production artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: web-zip
+#          path: ./intiface-central-web.zip
