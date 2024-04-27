@@ -213,8 +213,6 @@ jobs:
         run: cargo install cargo-make
       - name: Install cargo-ndk
         run: cargo install cargo-ndk
-      - run: rustup target install aarch64-linux-android
-      - run: rustup target install armv7-linux-androideabi
       - name: Build rust android library
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
