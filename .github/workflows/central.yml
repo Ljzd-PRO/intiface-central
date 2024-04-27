@@ -160,7 +160,7 @@ jobs:
       - run: flutter build ipa --release --no-codesign
         name: flutter build
       - name: Zip Release
-        run: zip -r intiface-central-ios.zip build/ios/iphoneos
+        run: zip -r intiface-central-ios.zip build/ios/archive/Runner.xcarchive
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -216,6 +216,7 @@ jobs:
       - name: Build rust android library
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG: true
 #          RANLIB: ${{ format('{0}{1}', steps.setup-ndk.outputs.ndk-path, '/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ranlib') }}
         run: cargo make build-android
         working-directory: intiface-engine-flutter-bridge
