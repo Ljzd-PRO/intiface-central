@@ -142,8 +142,14 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
+          target: aarch64-apple-ios
           toolchain: stable
           override: true
+      - name: Install cargo-make
+        run: cargo install cargo-make
+      - name: Build rust ios library
+        run: cargo make build-ios
+        working-directory: intiface-engine-flutter-bridge
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
