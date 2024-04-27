@@ -20,6 +20,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodule: true
       - name: rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -75,6 +77,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodule: true
       - name: rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -104,6 +108,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodule: true
       - name: rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -130,6 +136,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodule: true
       - uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
