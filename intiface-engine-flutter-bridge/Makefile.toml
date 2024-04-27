@@ -44,14 +44,13 @@ dependencies = ["android-aarch64", "android-arm7"]
 # dependencies = ["android-aarch64", "android-x86_64"]
 # dependencies = ["android-x86_64"]
 # dependencies = ["android-aarch64"]
-command = "cargo"
+command = "cross"
 args = [
-  "ndk",
-  "-t",
-  "armeabi-v7a",
-  "-t",
-  "arm64-v8a",
   "build",
+  "--target",
+  "armeabi-v7a",
+  "--target",
+  "arm64-v8a",
   "--release"
 ]
 
