@@ -1,3 +1,6 @@
 [submodule "buttplug"]
 	path = buttplug
 	url = https://github.com/Ljzd-PRO/buttplug
+[submodule "intiface-engine"]
+	path = intiface-engine
+	url = https://github.com/Ljzd-PRO/intiface-engine.git
