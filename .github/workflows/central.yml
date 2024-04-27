@@ -211,6 +211,8 @@ jobs:
           override: true
       - name: Install cargo-make
         run: cargo install cargo-make
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk
       - name: Build rust android library
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
