@@ -213,7 +213,7 @@ jobs:
           target: armv7-linux-androideabi
           toolchain: stable
           override: true
-      - run: apt-get install musl-tools clang llvm -y
+      - run: sudo apt-get install musl-tools clang llvm -y
       - name: Install cargo-make
         run: cargo install cargo-make
       - name: Install cargo-ndk
