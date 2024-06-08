@@ -27,25 +27,96 @@ pub extern "C" fn wire_send_backend_server_message(port_: i64, msg: *mut wire_ui
 }
 
 #[no_mangle]
-pub extern "C" fn wire_get_user_device_configs(
+pub extern "C" fn wire_setup_device_configuration_manager(
   port_: i64,
-  device_config_json: *mut wire_uint_8_list,
-  user_config_json: *mut wire_uint_8_list,
+  base_config: *mut wire_uint_8_list,
+  user_config: *mut wire_uint_8_list,
 ) {
-  wire_get_user_device_configs_impl(port_, device_config_json, user_config_json)
+  wire_setup_device_configuration_manager_impl(port_, base_config, user_config)
 }
 
 #[no_mangle]
-pub extern "C" fn wire_generate_user_device_config_file(
-  port_: i64,
-  user_config: *mut wire_ExposedUserConfig,
-) {
-  wire_generate_user_device_config_file_impl(port_, user_config)
+pub extern "C" fn wire_get_user_websocket_communication_specifiers(port_: i64) {
+  wire_get_user_websocket_communication_specifiers_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_get_user_serial_communication_specifiers(port_: i64) {
+  wire_get_user_serial_communication_specifiers_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_get_user_device_definitions(port_: i64) {
+  wire_get_user_device_definitions_impl(port_)
 }
 
 #[no_mangle]
 pub extern "C" fn wire_get_protocol_names(port_: i64) {
   wire_get_protocol_names_impl(port_)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_add_websocket_specifier(
+  port_: i64,
+  protocol: *mut wire_uint_8_list,
+  name: *mut wire_uint_8_list,
+) {
+  wire_add_websocket_specifier_impl(port_, protocol, name)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_remove_websocket_specifier(
+  port_: i64,
+  protocol: *mut wire_uint_8_list,
+  name: *mut wire_uint_8_list,
+) {
+  wire_remove_websocket_specifier_impl(port_, protocol, name)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_add_serial_specifier(
+  port_: i64,
+  protocol: *mut wire_uint_8_list,
+  port: *mut wire_uint_8_list,
+  baud_rate: u32,
+  data_bits: u8,
+  stop_bits: u8,
+  parity: *mut wire_uint_8_list,
+) {
+  wire_add_serial_specifier_impl(
+    port_, protocol, port, baud_rate, data_bits, stop_bits, parity,
+  )
+}
+
+#[no_mangle]
+pub extern "C" fn wire_remove_serial_specifier(
+  port_: i64,
+  protocol: *mut wire_uint_8_list,
+  port: *mut wire_uint_8_list,
+) {
+  wire_remove_serial_specifier_impl(port_, protocol, port)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_update_user_config(
+  port_: i64,
+  identifier: *mut wire_ExposedUserDeviceIdentifier,
+  config: *mut wire_ExposedUserDeviceDefinition,
+) {
+  wire_update_user_config_impl(port_, identifier, config)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_remove_user_config(
+  port_: i64,
+  identifier: *mut wire_ExposedUserDeviceIdentifier,
+) {
+  wire_remove_user_config_impl(port_, identifier)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_get_user_config_str(port_: i64) {
+  wire_get_user_config_str_impl(port_)
 }
 
 #[no_mangle]
@@ -66,33 +137,32 @@ pub extern "C" fn wire_crash_reporting(port_: i64, sentry_api_key: *mut wire_uin
 // Section: allocate functions
 
 #[no_mangle]
-pub extern "C" fn new_StringList_0(len: i32) -> *mut wire_StringList {
-  let wrap = wire_StringList {
-    ptr: support::new_leak_vec_ptr(<*mut wire_uint_8_list>::new_with_null_ptr(), len),
-    len,
-  };
-  support::new_leak_box_ptr(wrap)
-}
-
-#[no_mangle]
-pub extern "C" fn new_box_autoadd_bool_0(value: bool) -> *mut bool {
-  support::new_leak_box_ptr(value)
-}
-
-#[no_mangle]
 pub extern "C" fn new_box_autoadd_engine_options_external_0() -> *mut wire_EngineOptionsExternal {
   support::new_leak_box_ptr(wire_EngineOptionsExternal::new_with_null_ptr())
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_exposed_user_config_0() -> *mut wire_ExposedUserConfig {
-  support::new_leak_box_ptr(wire_ExposedUserConfig::new_with_null_ptr())
+pub extern "C" fn new_box_autoadd_exposed_device_feature_actuator_0(
+) -> *mut wire_ExposedDeviceFeatureActuator {
+  support::new_leak_box_ptr(wire_ExposedDeviceFeatureActuator::new_with_null_ptr())
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_exposed_websocket_specifier_0(
-) -> *mut wire_ExposedWebsocketSpecifier {
-  support::new_leak_box_ptr(wire_ExposedWebsocketSpecifier::new_with_null_ptr())
+pub extern "C" fn new_box_autoadd_exposed_device_feature_sensor_0(
+) -> *mut wire_ExposedDeviceFeatureSensor {
+  support::new_leak_box_ptr(wire_ExposedDeviceFeatureSensor::new_with_null_ptr())
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_exposed_user_device_definition_0(
+) -> *mut wire_ExposedUserDeviceDefinition {
+  support::new_leak_box_ptr(wire_ExposedUserDeviceDefinition::new_with_null_ptr())
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_exposed_user_device_identifier_0(
+) -> *mut wire_ExposedUserDeviceIdentifier {
+  support::new_leak_box_ptr(wire_ExposedUserDeviceIdentifier::new_with_null_ptr())
 }
 
 #[no_mangle]
@@ -101,30 +171,42 @@ pub extern "C" fn new_box_autoadd_u16_0(value: u16) -> *mut u16 {
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_u32_0(value: u32) -> *mut u32 {
-  support::new_leak_box_ptr(value)
-}
-
-#[no_mangle]
-pub extern "C" fn new_list___record__String_exposed_user_device_specifiers_0(
-  len: i32,
-) -> *mut wire_list___record__String_exposed_user_device_specifiers {
-  let wrap = wire_list___record__String_exposed_user_device_specifiers {
-    ptr: support::new_leak_vec_ptr(
-      <wire___record__String_exposed_user_device_specifiers>::new_with_null_ptr(),
-      len,
-    ),
+pub extern "C" fn new_list___record__i32_i32_0(len: i32) -> *mut wire_list___record__i32_i32 {
+  let wrap = wire_list___record__i32_i32 {
+    ptr: support::new_leak_vec_ptr(<wire___record__i32_i32>::new_with_null_ptr(), len),
     len,
   };
   support::new_leak_box_ptr(wrap)
 }
 
 #[no_mangle]
-pub extern "C" fn new_list_exposed_user_device_config_0(
+pub extern "C" fn new_list_buttplug_actuator_feature_message_type_0(
   len: i32,
-) -> *mut wire_list_exposed_user_device_config {
-  let wrap = wire_list_exposed_user_device_config {
-    ptr: support::new_leak_vec_ptr(<wire_ExposedUserDeviceConfig>::new_with_null_ptr(), len),
+) -> *mut wire_list_buttplug_actuator_feature_message_type {
+  let wrap = wire_list_buttplug_actuator_feature_message_type {
+    ptr: support::new_leak_vec_ptr(Default::default(), len),
+    len,
+  };
+  support::new_leak_box_ptr(wrap)
+}
+
+#[no_mangle]
+pub extern "C" fn new_list_buttplug_sensor_feature_message_type_0(
+  len: i32,
+) -> *mut wire_list_buttplug_sensor_feature_message_type {
+  let wrap = wire_list_buttplug_sensor_feature_message_type {
+    ptr: support::new_leak_vec_ptr(Default::default(), len),
+    len,
+  };
+  support::new_leak_box_ptr(wrap)
+}
+
+#[no_mangle]
+pub extern "C" fn new_list_exposed_device_feature_0(
+  len: i32,
+) -> *mut wire_list_exposed_device_feature {
+  let wrap = wire_list_exposed_device_feature {
+    ptr: support::new_leak_vec_ptr(<wire_ExposedDeviceFeature>::new_with_null_ptr(), len),
     len,
   };
   support::new_leak_box_ptr(wrap)
@@ -149,44 +231,45 @@ impl Wire2Api<String> for *mut wire_uint_8_list {
     String::from_utf8_lossy(&vec).into_owned()
   }
 }
-impl Wire2Api<Vec<String>> for *mut wire_StringList {
-  fn wire2api(self) -> Vec<String> {
-    let vec = unsafe {
-      let wrap = support::box_from_leak_ptr(self);
-      support::vec_from_leak_ptr(wrap.ptr, wrap.len)
-    };
-    vec.into_iter().map(Wire2Api::wire2api).collect()
+impl Wire2Api<(i32, i32)> for wire___record__i32_i32 {
+  fn wire2api(self) -> (i32, i32) {
+    (self.field0.wire2api(), self.field1.wire2api())
   }
 }
-impl Wire2Api<(String, ExposedUserDeviceSpecifiers)>
-  for wire___record__String_exposed_user_device_specifiers
-{
-  fn wire2api(self) -> (String, ExposedUserDeviceSpecifiers) {
+impl Wire2Api<(u32, u32)> for wire___record__u32_u32 {
+  fn wire2api(self) -> (u32, u32) {
     (self.field0.wire2api(), self.field1.wire2api())
   }
 }
 
-impl Wire2Api<bool> for *mut bool {
-  fn wire2api(self) -> bool {
-    unsafe { *support::box_from_leak_ptr(self) }
-  }
-}
 impl Wire2Api<EngineOptionsExternal> for *mut wire_EngineOptionsExternal {
   fn wire2api(self) -> EngineOptionsExternal {
     let wrap = unsafe { support::box_from_leak_ptr(self) };
     Wire2Api::<EngineOptionsExternal>::wire2api(*wrap).into()
   }
 }
-impl Wire2Api<ExposedUserConfig> for *mut wire_ExposedUserConfig {
-  fn wire2api(self) -> ExposedUserConfig {
+impl Wire2Api<ExposedDeviceFeatureActuator> for *mut wire_ExposedDeviceFeatureActuator {
+  fn wire2api(self) -> ExposedDeviceFeatureActuator {
     let wrap = unsafe { support::box_from_leak_ptr(self) };
-    Wire2Api::<ExposedUserConfig>::wire2api(*wrap).into()
+    Wire2Api::<ExposedDeviceFeatureActuator>::wire2api(*wrap).into()
   }
 }
-impl Wire2Api<ExposedWebsocketSpecifier> for *mut wire_ExposedWebsocketSpecifier {
-  fn wire2api(self) -> ExposedWebsocketSpecifier {
+impl Wire2Api<ExposedDeviceFeatureSensor> for *mut wire_ExposedDeviceFeatureSensor {
+  fn wire2api(self) -> ExposedDeviceFeatureSensor {
     let wrap = unsafe { support::box_from_leak_ptr(self) };
-    Wire2Api::<ExposedWebsocketSpecifier>::wire2api(*wrap).into()
+    Wire2Api::<ExposedDeviceFeatureSensor>::wire2api(*wrap).into()
+  }
+}
+impl Wire2Api<ExposedUserDeviceDefinition> for *mut wire_ExposedUserDeviceDefinition {
+  fn wire2api(self) -> ExposedUserDeviceDefinition {
+    let wrap = unsafe { support::box_from_leak_ptr(self) };
+    Wire2Api::<ExposedUserDeviceDefinition>::wire2api(*wrap).into()
+  }
+}
+impl Wire2Api<ExposedUserDeviceIdentifier> for *mut wire_ExposedUserDeviceIdentifier {
+  fn wire2api(self) -> ExposedUserDeviceIdentifier {
+    let wrap = unsafe { support::box_from_leak_ptr(self) };
+    Wire2Api::<ExposedUserDeviceIdentifier>::wire2api(*wrap).into()
   }
 }
 impl Wire2Api<u16> for *mut u16 {
@@ -194,16 +277,13 @@ impl Wire2Api<u16> for *mut u16 {
     unsafe { *support::box_from_leak_ptr(self) }
   }
 }
-impl Wire2Api<u32> for *mut u32 {
-  fn wire2api(self) -> u32 {
-    unsafe { *support::box_from_leak_ptr(self) }
-  }
-}
+
 impl Wire2Api<EngineOptionsExternal> for wire_EngineOptionsExternal {
   fn wire2api(self) -> EngineOptionsExternal {
     EngineOptionsExternal {
       device_config_json: self.device_config_json.wire2api(),
       user_device_config_json: self.user_device_config_json.wire2api(),
+      user_device_config_path: self.user_device_config_path.wire2api(),
       server_name: self.server_name.wire2api(),
       websocket_use_all_interfaces: self.websocket_use_all_interfaces.wire2api(),
       websocket_port: self.websocket_port.wire2api(),
@@ -231,44 +311,64 @@ impl Wire2Api<EngineOptionsExternal> for wire_EngineOptionsExternal {
     }
   }
 }
-impl Wire2Api<ExposedUserConfig> for wire_ExposedUserConfig {
-  fn wire2api(self) -> ExposedUserConfig {
-    ExposedUserConfig {
-      specifiers: self.specifiers.wire2api(),
-      configurations: self.configurations.wire2api(),
+impl Wire2Api<ExposedDeviceFeature> for wire_ExposedDeviceFeature {
+  fn wire2api(self) -> ExposedDeviceFeature {
+    ExposedDeviceFeature {
+      description: self.description.wire2api(),
+      feature_type: self.feature_type.wire2api(),
+      actuator: self.actuator.wire2api(),
+      sensor: self.sensor.wire2api(),
     }
   }
 }
-impl Wire2Api<ExposedUserDeviceConfig> for wire_ExposedUserDeviceConfig {
-  fn wire2api(self) -> ExposedUserDeviceConfig {
-    ExposedUserDeviceConfig {
-      identifier: self.identifier.wire2api(),
-      name: self.name.wire2api(),
+impl Wire2Api<ExposedDeviceFeatureActuator> for wire_ExposedDeviceFeatureActuator {
+  fn wire2api(self) -> ExposedDeviceFeatureActuator {
+    ExposedDeviceFeatureActuator {
+      step_range: self.step_range.wire2api(),
+      step_limit: self.step_limit.wire2api(),
+      messages: self.messages.wire2api(),
+    }
+  }
+}
+impl Wire2Api<ExposedDeviceFeatureSensor> for wire_ExposedDeviceFeatureSensor {
+  fn wire2api(self) -> ExposedDeviceFeatureSensor {
+    ExposedDeviceFeatureSensor {
+      value_range: self.value_range.wire2api(),
+      messages: self.messages.wire2api(),
+    }
+  }
+}
+impl Wire2Api<ExposedUserDeviceCustomization> for wire_ExposedUserDeviceCustomization {
+  fn wire2api(self) -> ExposedUserDeviceCustomization {
+    ExposedUserDeviceCustomization {
       display_name: self.display_name.wire2api(),
       allow: self.allow.wire2api(),
       deny: self.deny.wire2api(),
-      reserved_index: self.reserved_index.wire2api(),
+      index: self.index.wire2api(),
     }
   }
 }
-impl Wire2Api<ExposedUserDeviceSpecifiers> for wire_ExposedUserDeviceSpecifiers {
-  fn wire2api(self) -> ExposedUserDeviceSpecifiers {
-    ExposedUserDeviceSpecifiers {
-      websocket: self.websocket.wire2api(),
+impl Wire2Api<ExposedUserDeviceDefinition> for wire_ExposedUserDeviceDefinition {
+  fn wire2api(self) -> ExposedUserDeviceDefinition {
+    ExposedUserDeviceDefinition {
+      name: self.name.wire2api(),
+      features: self.features.wire2api(),
+      user_config: self.user_config.wire2api(),
     }
   }
 }
-impl Wire2Api<ExposedWebsocketSpecifier> for wire_ExposedWebsocketSpecifier {
-  fn wire2api(self) -> ExposedWebsocketSpecifier {
-    ExposedWebsocketSpecifier {
-      names: self.names.wire2api(),
+impl Wire2Api<ExposedUserDeviceIdentifier> for wire_ExposedUserDeviceIdentifier {
+  fn wire2api(self) -> ExposedUserDeviceIdentifier {
+    ExposedUserDeviceIdentifier {
+      address: self.address.wire2api(),
+      protocol: self.protocol.wire2api(),
+      identifier: self.identifier.wire2api(),
     }
   }
 }
-impl Wire2Api<Vec<(String, ExposedUserDeviceSpecifiers)>>
-  for *mut wire_list___record__String_exposed_user_device_specifiers
-{
-  fn wire2api(self) -> Vec<(String, ExposedUserDeviceSpecifiers)> {
+
+impl Wire2Api<Vec<(i32, i32)>> for *mut wire_list___record__i32_i32 {
+  fn wire2api(self) -> Vec<(i32, i32)> {
     let vec = unsafe {
       let wrap = support::box_from_leak_ptr(self);
       support::vec_from_leak_ptr(wrap.ptr, wrap.len)
@@ -276,8 +376,30 @@ impl Wire2Api<Vec<(String, ExposedUserDeviceSpecifiers)>>
     vec.into_iter().map(Wire2Api::wire2api).collect()
   }
 }
-impl Wire2Api<Vec<ExposedUserDeviceConfig>> for *mut wire_list_exposed_user_device_config {
-  fn wire2api(self) -> Vec<ExposedUserDeviceConfig> {
+impl Wire2Api<Vec<ButtplugActuatorFeatureMessageType>>
+  for *mut wire_list_buttplug_actuator_feature_message_type
+{
+  fn wire2api(self) -> Vec<ButtplugActuatorFeatureMessageType> {
+    let vec = unsafe {
+      let wrap = support::box_from_leak_ptr(self);
+      support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+    };
+    vec.into_iter().map(Wire2Api::wire2api).collect()
+  }
+}
+impl Wire2Api<Vec<ButtplugSensorFeatureMessageType>>
+  for *mut wire_list_buttplug_sensor_feature_message_type
+{
+  fn wire2api(self) -> Vec<ButtplugSensorFeatureMessageType> {
+    let vec = unsafe {
+      let wrap = support::box_from_leak_ptr(self);
+      support::vec_from_leak_ptr(wrap.ptr, wrap.len)
+    };
+    vec.into_iter().map(Wire2Api::wire2api).collect()
+  }
+}
+impl Wire2Api<Vec<ExposedDeviceFeature>> for *mut wire_list_exposed_device_feature {
+  fn wire2api(self) -> Vec<ExposedDeviceFeature> {
     let vec = unsafe {
       let wrap = support::box_from_leak_ptr(self);
       support::vec_from_leak_ptr(wrap.ptr, wrap.len)
@@ -294,29 +416,20 @@ impl Wire2Api<Vec<u8>> for *mut wire_uint_8_list {
     }
   }
 }
-impl Wire2Api<UserConfigDeviceIdentifier> for wire_UserConfigDeviceIdentifier {
-  fn wire2api(self) -> UserConfigDeviceIdentifier {
-    UserConfigDeviceIdentifier {
-      address: self.address.wire2api(),
-      protocol: self.protocol.wire2api(),
-      identifier: self.identifier.wire2api(),
-    }
-  }
-}
 // Section: wire structs
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_StringList {
-  ptr: *mut *mut wire_uint_8_list,
-  len: i32,
+pub struct wire___record__i32_i32 {
+  field0: i32,
+  field1: i32,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire___record__String_exposed_user_device_specifiers {
-  field0: *mut wire_uint_8_list,
-  field1: wire_ExposedUserDeviceSpecifiers,
+pub struct wire___record__u32_u32 {
+  field0: u32,
+  field1: u32,
 }
 
 #[repr(C)]
@@ -324,6 +437,7 @@ pub struct wire___record__String_exposed_user_device_specifiers {
 pub struct wire_EngineOptionsExternal {
   device_config_json: *mut wire_uint_8_list,
   user_device_config_json: *mut wire_uint_8_list,
+  user_device_config_path: *mut wire_uint_8_list,
   server_name: *mut wire_uint_8_list,
   websocket_use_all_interfaces: bool,
   websocket_port: *mut u16,
@@ -352,45 +466,78 @@ pub struct wire_EngineOptionsExternal {
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_ExposedUserConfig {
-  specifiers: *mut wire_list___record__String_exposed_user_device_specifiers,
-  configurations: *mut wire_list_exposed_user_device_config,
+pub struct wire_ExposedDeviceFeature {
+  description: *mut wire_uint_8_list,
+  feature_type: i32,
+  actuator: *mut wire_ExposedDeviceFeatureActuator,
+  sensor: *mut wire_ExposedDeviceFeatureSensor,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_ExposedUserDeviceConfig {
-  identifier: wire_UserConfigDeviceIdentifier,
-  name: *mut wire_uint_8_list,
+pub struct wire_ExposedDeviceFeatureActuator {
+  step_range: wire___record__u32_u32,
+  step_limit: wire___record__u32_u32,
+  messages: *mut wire_list_buttplug_actuator_feature_message_type,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_ExposedDeviceFeatureSensor {
+  value_range: *mut wire_list___record__i32_i32,
+  messages: *mut wire_list_buttplug_sensor_feature_message_type,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_ExposedUserDeviceCustomization {
   display_name: *mut wire_uint_8_list,
-  allow: *mut bool,
-  deny: *mut bool,
-  reserved_index: *mut u32,
+  allow: bool,
+  deny: bool,
+  index: u32,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_ExposedUserDeviceSpecifiers {
-  websocket: *mut wire_ExposedWebsocketSpecifier,
+pub struct wire_ExposedUserDeviceDefinition {
+  name: *mut wire_uint_8_list,
+  features: *mut wire_list_exposed_device_feature,
+  user_config: wire_ExposedUserDeviceCustomization,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_ExposedWebsocketSpecifier {
-  names: *mut wire_StringList,
+pub struct wire_ExposedUserDeviceIdentifier {
+  address: *mut wire_uint_8_list,
+  protocol: *mut wire_uint_8_list,
+  identifier: *mut wire_uint_8_list,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_list___record__String_exposed_user_device_specifiers {
-  ptr: *mut wire___record__String_exposed_user_device_specifiers,
+pub struct wire_list___record__i32_i32 {
+  ptr: *mut wire___record__i32_i32,
   len: i32,
 }
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_list_exposed_user_device_config {
-  ptr: *mut wire_ExposedUserDeviceConfig,
+pub struct wire_list_buttplug_actuator_feature_message_type {
+  ptr: *mut i32,
+  len: i32,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_list_buttplug_sensor_feature_message_type {
+  ptr: *mut i32,
+  len: i32,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_list_exposed_device_feature {
+  ptr: *mut wire_ExposedDeviceFeature,
   len: i32,
 }
 
@@ -399,14 +546,6 @@ pub struct wire_list_exposed_user_device_config {
 pub struct wire_uint_8_list {
   ptr: *mut u8,
   len: i32,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_UserConfigDeviceIdentifier {
-  address: *mut wire_uint_8_list,
-  protocol: *mut wire_uint_8_list,
-  identifier: *mut wire_uint_8_list,
 }
 
 // Section: impl NewWithNullPtr
@@ -421,16 +560,31 @@ impl<T> NewWithNullPtr for *mut T {
   }
 }
 
-impl NewWithNullPtr for wire___record__String_exposed_user_device_specifiers {
+impl NewWithNullPtr for wire___record__i32_i32 {
   fn new_with_null_ptr() -> Self {
     Self {
-      field0: core::ptr::null_mut(),
+      field0: Default::default(),
       field1: Default::default(),
     }
   }
 }
 
-impl Default for wire___record__String_exposed_user_device_specifiers {
+impl Default for wire___record__i32_i32 {
+  fn default() -> Self {
+    Self::new_with_null_ptr()
+  }
+}
+
+impl NewWithNullPtr for wire___record__u32_u32 {
+  fn new_with_null_ptr() -> Self {
+    Self {
+      field0: Default::default(),
+      field1: Default::default(),
+    }
+  }
+}
+
+impl Default for wire___record__u32_u32 {
   fn default() -> Self {
     Self::new_with_null_ptr()
   }
@@ -441,6 +595,7 @@ impl NewWithNullPtr for wire_EngineOptionsExternal {
     Self {
       device_config_json: core::ptr::null_mut(),
       user_device_config_json: core::ptr::null_mut(),
+      user_device_config_path: core::ptr::null_mut(),
       server_name: core::ptr::null_mut(),
       websocket_use_all_interfaces: Default::default(),
       websocket_port: core::ptr::null_mut(),
@@ -475,69 +630,88 @@ impl Default for wire_EngineOptionsExternal {
   }
 }
 
-impl NewWithNullPtr for wire_ExposedUserConfig {
+impl NewWithNullPtr for wire_ExposedDeviceFeature {
   fn new_with_null_ptr() -> Self {
     Self {
-      specifiers: core::ptr::null_mut(),
-      configurations: core::ptr::null_mut(),
+      description: core::ptr::null_mut(),
+      feature_type: Default::default(),
+      actuator: core::ptr::null_mut(),
+      sensor: core::ptr::null_mut(),
     }
   }
 }
 
-impl Default for wire_ExposedUserConfig {
+impl Default for wire_ExposedDeviceFeature {
   fn default() -> Self {
     Self::new_with_null_ptr()
   }
 }
 
-impl NewWithNullPtr for wire_ExposedUserDeviceConfig {
+impl NewWithNullPtr for wire_ExposedDeviceFeatureActuator {
   fn new_with_null_ptr() -> Self {
     Self {
-      identifier: Default::default(),
-      name: core::ptr::null_mut(),
+      step_range: Default::default(),
+      step_limit: Default::default(),
+      messages: core::ptr::null_mut(),
+    }
+  }
+}
+
+impl Default for wire_ExposedDeviceFeatureActuator {
+  fn default() -> Self {
+    Self::new_with_null_ptr()
+  }
+}
+
+impl NewWithNullPtr for wire_ExposedDeviceFeatureSensor {
+  fn new_with_null_ptr() -> Self {
+    Self {
+      value_range: core::ptr::null_mut(),
+      messages: core::ptr::null_mut(),
+    }
+  }
+}
+
+impl Default for wire_ExposedDeviceFeatureSensor {
+  fn default() -> Self {
+    Self::new_with_null_ptr()
+  }
+}
+
+impl NewWithNullPtr for wire_ExposedUserDeviceCustomization {
+  fn new_with_null_ptr() -> Self {
+    Self {
       display_name: core::ptr::null_mut(),
-      allow: core::ptr::null_mut(),
-      deny: core::ptr::null_mut(),
-      reserved_index: core::ptr::null_mut(),
+      allow: Default::default(),
+      deny: Default::default(),
+      index: Default::default(),
     }
   }
 }
 
-impl Default for wire_ExposedUserDeviceConfig {
+impl Default for wire_ExposedUserDeviceCustomization {
   fn default() -> Self {
     Self::new_with_null_ptr()
   }
 }
 
-impl NewWithNullPtr for wire_ExposedUserDeviceSpecifiers {
+impl NewWithNullPtr for wire_ExposedUserDeviceDefinition {
   fn new_with_null_ptr() -> Self {
     Self {
-      websocket: core::ptr::null_mut(),
+      name: core::ptr::null_mut(),
+      features: core::ptr::null_mut(),
+      user_config: Default::default(),
     }
   }
 }
 
-impl Default for wire_ExposedUserDeviceSpecifiers {
+impl Default for wire_ExposedUserDeviceDefinition {
   fn default() -> Self {
     Self::new_with_null_ptr()
   }
 }
 
-impl NewWithNullPtr for wire_ExposedWebsocketSpecifier {
-  fn new_with_null_ptr() -> Self {
-    Self {
-      names: core::ptr::null_mut(),
-    }
-  }
-}
-
-impl Default for wire_ExposedWebsocketSpecifier {
-  fn default() -> Self {
-    Self::new_with_null_ptr()
-  }
-}
-
-impl NewWithNullPtr for wire_UserConfigDeviceIdentifier {
+impl NewWithNullPtr for wire_ExposedUserDeviceIdentifier {
   fn new_with_null_ptr() -> Self {
     Self {
       address: core::ptr::null_mut(),
@@ -547,7 +721,7 @@ impl NewWithNullPtr for wire_UserConfigDeviceIdentifier {
   }
 }
 
-impl Default for wire_UserConfigDeviceIdentifier {
+impl Default for wire_ExposedUserDeviceIdentifier {
   fn default() -> Self {
     Self::new_with_null_ptr()
   }

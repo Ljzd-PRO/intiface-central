@@ -17,6 +17,7 @@ typedef struct wire_uint_8_list {
 typedef struct wire_EngineOptionsExternal {
   struct wire_uint_8_list *device_config_json;
   struct wire_uint_8_list *user_device_config_json;
+  struct wire_uint_8_list *user_device_config_path;
   struct wire_uint_8_list *server_name;
   bool websocket_use_all_interfaces;
   uint16_t *websocket_port;
@@ -43,53 +44,72 @@ typedef struct wire_EngineOptionsExternal {
   struct wire_uint_8_list *repeater_remote_address;
 } wire_EngineOptionsExternal;
 
-typedef struct wire_StringList {
-  struct wire_uint_8_list **ptr;
-  int32_t len;
-} wire_StringList;
-
-typedef struct wire_ExposedWebsocketSpecifier {
-  struct wire_StringList *names;
-} wire_ExposedWebsocketSpecifier;
-
-typedef struct wire_ExposedUserDeviceSpecifiers {
-  struct wire_ExposedWebsocketSpecifier *websocket;
-} wire_ExposedUserDeviceSpecifiers;
-
-typedef struct wire___record__String_exposed_user_device_specifiers {
-  struct wire_uint_8_list *field0;
-  struct wire_ExposedUserDeviceSpecifiers field1;
-} wire___record__String_exposed_user_device_specifiers;
-
-typedef struct wire_list___record__String_exposed_user_device_specifiers {
-  struct wire___record__String_exposed_user_device_specifiers *ptr;
-  int32_t len;
-} wire_list___record__String_exposed_user_device_specifiers;
-
-typedef struct wire_UserConfigDeviceIdentifier {
+typedef struct wire_ExposedUserDeviceIdentifier {
   struct wire_uint_8_list *address;
   struct wire_uint_8_list *protocol;
   struct wire_uint_8_list *identifier;
-} wire_UserConfigDeviceIdentifier;
+} wire_ExposedUserDeviceIdentifier;
 
-typedef struct wire_ExposedUserDeviceConfig {
-  struct wire_UserConfigDeviceIdentifier identifier;
-  struct wire_uint_8_list *name;
-  struct wire_uint_8_list *display_name;
-  bool *allow;
-  bool *deny;
-  uint32_t *reserved_index;
-} wire_ExposedUserDeviceConfig;
+typedef struct wire___record__u32_u32 {
+  uint32_t field0;
+  uint32_t field1;
+} wire___record__u32_u32;
 
-typedef struct wire_list_exposed_user_device_config {
-  struct wire_ExposedUserDeviceConfig *ptr;
+typedef struct wire_list_buttplug_actuator_feature_message_type {
+  int32_t *ptr;
   int32_t len;
-} wire_list_exposed_user_device_config;
+} wire_list_buttplug_actuator_feature_message_type;
 
-typedef struct wire_ExposedUserConfig {
-  struct wire_list___record__String_exposed_user_device_specifiers *specifiers;
-  struct wire_list_exposed_user_device_config *configurations;
-} wire_ExposedUserConfig;
+typedef struct wire_ExposedDeviceFeatureActuator {
+  struct wire___record__u32_u32 step_range;
+  struct wire___record__u32_u32 step_limit;
+  struct wire_list_buttplug_actuator_feature_message_type *messages;
+} wire_ExposedDeviceFeatureActuator;
+
+typedef struct wire___record__i32_i32 {
+  int32_t field0;
+  int32_t field1;
+} wire___record__i32_i32;
+
+typedef struct wire_list___record__i32_i32 {
+  struct wire___record__i32_i32 *ptr;
+  int32_t len;
+} wire_list___record__i32_i32;
+
+typedef struct wire_list_buttplug_sensor_feature_message_type {
+  int32_t *ptr;
+  int32_t len;
+} wire_list_buttplug_sensor_feature_message_type;
+
+typedef struct wire_ExposedDeviceFeatureSensor {
+  struct wire_list___record__i32_i32 *value_range;
+  struct wire_list_buttplug_sensor_feature_message_type *messages;
+} wire_ExposedDeviceFeatureSensor;
+
+typedef struct wire_ExposedDeviceFeature {
+  struct wire_uint_8_list *description;
+  int32_t feature_type;
+  struct wire_ExposedDeviceFeatureActuator *actuator;
+  struct wire_ExposedDeviceFeatureSensor *sensor;
+} wire_ExposedDeviceFeature;
+
+typedef struct wire_list_exposed_device_feature {
+  struct wire_ExposedDeviceFeature *ptr;
+  int32_t len;
+} wire_list_exposed_device_feature;
+
+typedef struct wire_ExposedUserDeviceCustomization {
+  struct wire_uint_8_list *display_name;
+  bool allow;
+  bool deny;
+  uint32_t index;
+} wire_ExposedUserDeviceCustomization;
+
+typedef struct wire_ExposedUserDeviceDefinition {
+  struct wire_uint_8_list *name;
+  struct wire_list_exposed_device_feature *features;
+  struct wire_ExposedUserDeviceCustomization user_config;
+} wire_ExposedUserDeviceDefinition;
 
 typedef struct DartCObject *WireSyncReturn;
 
@@ -113,14 +133,45 @@ void wire_stop_engine(int64_t port_);
 
 void wire_send_backend_server_message(int64_t port_, struct wire_uint_8_list *msg);
 
-void wire_get_user_device_configs(int64_t port_,
-                                  struct wire_uint_8_list *device_config_json,
-                                  struct wire_uint_8_list *user_config_json);
+void wire_setup_device_configuration_manager(int64_t port_,
+                                             struct wire_uint_8_list *base_config,
+                                             struct wire_uint_8_list *user_config);
 
-void wire_generate_user_device_config_file(int64_t port_,
-                                           struct wire_ExposedUserConfig *user_config);
+void wire_get_user_websocket_communication_specifiers(int64_t port_);
+
+void wire_get_user_serial_communication_specifiers(int64_t port_);
+
+void wire_get_user_device_definitions(int64_t port_);
 
 void wire_get_protocol_names(int64_t port_);
+
+void wire_add_websocket_specifier(int64_t port_,
+                                  struct wire_uint_8_list *protocol,
+                                  struct wire_uint_8_list *name);
+
+void wire_remove_websocket_specifier(int64_t port_,
+                                     struct wire_uint_8_list *protocol,
+                                     struct wire_uint_8_list *name);
+
+void wire_add_serial_specifier(int64_t port_,
+                               struct wire_uint_8_list *protocol,
+                               struct wire_uint_8_list *port,
+                               uint32_t baud_rate,
+                               uint8_t data_bits,
+                               uint8_t stop_bits,
+                               struct wire_uint_8_list *parity);
+
+void wire_remove_serial_specifier(int64_t port_,
+                                  struct wire_uint_8_list *protocol,
+                                  struct wire_uint_8_list *port);
+
+void wire_update_user_config(int64_t port_,
+                             struct wire_ExposedUserDeviceIdentifier *identifier,
+                             struct wire_ExposedUserDeviceDefinition *config);
+
+void wire_remove_user_config(int64_t port_, struct wire_ExposedUserDeviceIdentifier *identifier);
+
+void wire_get_user_config_str(int64_t port_);
 
 void wire_setup_logging(int64_t port_);
 
@@ -128,23 +179,25 @@ void wire_shutdown_logging(int64_t port_);
 
 void wire_crash_reporting(int64_t port_, struct wire_uint_8_list *sentry_api_key);
 
-struct wire_StringList *new_StringList_0(int32_t len);
-
-bool *new_box_autoadd_bool_0(bool value);
-
 struct wire_EngineOptionsExternal *new_box_autoadd_engine_options_external_0(void);
 
-struct wire_ExposedUserConfig *new_box_autoadd_exposed_user_config_0(void);
+struct wire_ExposedDeviceFeatureActuator *new_box_autoadd_exposed_device_feature_actuator_0(void);
 
-struct wire_ExposedWebsocketSpecifier *new_box_autoadd_exposed_websocket_specifier_0(void);
+struct wire_ExposedDeviceFeatureSensor *new_box_autoadd_exposed_device_feature_sensor_0(void);
+
+struct wire_ExposedUserDeviceDefinition *new_box_autoadd_exposed_user_device_definition_0(void);
+
+struct wire_ExposedUserDeviceIdentifier *new_box_autoadd_exposed_user_device_identifier_0(void);
 
 uint16_t *new_box_autoadd_u16_0(uint16_t value);
 
-uint32_t *new_box_autoadd_u32_0(uint32_t value);
+struct wire_list___record__i32_i32 *new_list___record__i32_i32_0(int32_t len);
 
-struct wire_list___record__String_exposed_user_device_specifiers *new_list___record__String_exposed_user_device_specifiers_0(int32_t len);
+struct wire_list_buttplug_actuator_feature_message_type *new_list_buttplug_actuator_feature_message_type_0(int32_t len);
 
-struct wire_list_exposed_user_device_config *new_list_exposed_user_device_config_0(int32_t len);
+struct wire_list_buttplug_sensor_feature_message_type *new_list_buttplug_sensor_feature_message_type_0(int32_t len);
+
+struct wire_list_exposed_device_feature *new_list_exposed_device_feature_0(int32_t len);
 
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
 
@@ -157,21 +210,31 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_send);
     dummy_var ^= ((int64_t) (void*) wire_stop_engine);
     dummy_var ^= ((int64_t) (void*) wire_send_backend_server_message);
-    dummy_var ^= ((int64_t) (void*) wire_get_user_device_configs);
-    dummy_var ^= ((int64_t) (void*) wire_generate_user_device_config_file);
+    dummy_var ^= ((int64_t) (void*) wire_setup_device_configuration_manager);
+    dummy_var ^= ((int64_t) (void*) wire_get_user_websocket_communication_specifiers);
+    dummy_var ^= ((int64_t) (void*) wire_get_user_serial_communication_specifiers);
+    dummy_var ^= ((int64_t) (void*) wire_get_user_device_definitions);
     dummy_var ^= ((int64_t) (void*) wire_get_protocol_names);
+    dummy_var ^= ((int64_t) (void*) wire_add_websocket_specifier);
+    dummy_var ^= ((int64_t) (void*) wire_remove_websocket_specifier);
+    dummy_var ^= ((int64_t) (void*) wire_add_serial_specifier);
+    dummy_var ^= ((int64_t) (void*) wire_remove_serial_specifier);
+    dummy_var ^= ((int64_t) (void*) wire_update_user_config);
+    dummy_var ^= ((int64_t) (void*) wire_remove_user_config);
+    dummy_var ^= ((int64_t) (void*) wire_get_user_config_str);
     dummy_var ^= ((int64_t) (void*) wire_setup_logging);
     dummy_var ^= ((int64_t) (void*) wire_shutdown_logging);
     dummy_var ^= ((int64_t) (void*) wire_crash_reporting);
-    dummy_var ^= ((int64_t) (void*) new_StringList_0);
-    dummy_var ^= ((int64_t) (void*) new_box_autoadd_bool_0);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_engine_options_external_0);
-    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_user_config_0);
-    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_websocket_specifier_0);
+    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_device_feature_actuator_0);
+    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_device_feature_sensor_0);
+    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_user_device_definition_0);
+    dummy_var ^= ((int64_t) (void*) new_box_autoadd_exposed_user_device_identifier_0);
     dummy_var ^= ((int64_t) (void*) new_box_autoadd_u16_0);
-    dummy_var ^= ((int64_t) (void*) new_box_autoadd_u32_0);
-    dummy_var ^= ((int64_t) (void*) new_list___record__String_exposed_user_device_specifiers_0);
-    dummy_var ^= ((int64_t) (void*) new_list_exposed_user_device_config_0);
+    dummy_var ^= ((int64_t) (void*) new_list___record__i32_i32_0);
+    dummy_var ^= ((int64_t) (void*) new_list_buttplug_actuator_feature_message_type_0);
+    dummy_var ^= ((int64_t) (void*) new_list_buttplug_sensor_feature_message_type_0);
+    dummy_var ^= ((int64_t) (void*) new_list_exposed_device_feature_0);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);
     dummy_var ^= ((int64_t) (void*) store_dart_post_cobject);
